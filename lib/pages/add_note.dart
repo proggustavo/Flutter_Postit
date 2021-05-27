@@ -10,21 +10,22 @@ class AddNote extends StatefulWidget {
 class _AddNoteState extends State<AddNote> {
   String title;
   String body;
-  DateTime date;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController bodyController = TextEditingController();
 
   addNote(NoteModel note) {
     DatabaseProvider.db.addNewNote(note);
-    print('note added');
+    print('Anotação adicionada');
   }
 
   @override
   Widget build(BuildContext context) {
+    final NoteModel note =
+        ModalRoute.of(context).settings.arguments as NoteModel;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add new Note"),
+        title: Text("Adicionar nova anotação"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -34,7 +35,7 @@ class _AddNoteState extends State<AddNote> {
               controller: titleController,
               decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: "Note Title",
+                hintText: "Título",
               ),
               style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
             ),
@@ -44,7 +45,7 @@ class _AddNoteState extends State<AddNote> {
               maxLines: null,
               controller: bodyController,
               decoration: InputDecoration(
-                  border: InputBorder.none, hintText: "Your note"),
+                  border: InputBorder.none, hintText: "Sua anotação"),
             ))
           ],
         ),
@@ -54,14 +55,13 @@ class _AddNoteState extends State<AddNote> {
             setState(() {
               title = titleController.text;
               body = bodyController.text;
-              date = DateTime.now();
             });                    
             NoteModel note =
-                NoteModel(title: title, body: body, creation_date: date);
+                NoteModel(title: title, body: body);
             addNote(note);
             Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
           },
-          label: Text('Save Note'),
+          label: Text('Anotação salva'),
           icon: Icon(Icons.save)),
     );
   }

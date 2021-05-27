@@ -10,8 +10,7 @@ class NoteModel {
     return ({
       "id": id,
       "title": title,
-      "body": body,
-      "creation_date": creation_date.toString()
+      "body": body
     });
   }
 }
