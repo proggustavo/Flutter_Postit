@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_postit/db/database_provider.dart';
+import 'package:flutter_postit/models/notes_model.dart';
 import 'package:flutter_postit/pages/add_note.dart';
+import 'package:flutter_postit/pages/display_note.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,6 +15,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => HomePage(),
         "/AddNote": (context) => AddNote(),
+        "/ShowNote": (context) => ShowNote(),
       },
     );
   }
@@ -26,7 +29,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //getting all notes
   getNotes() async {
-    print('aq');
     final notes = await DatabaseProvider.db.getNotes();
     return notes;
   }
@@ -34,7 +36,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("My notes")),
+      appBar: AppBar(
+        title: Text("Minhas anotações"),
+      ),
       body: FutureBuilder(
         future: getNotes(),
         builder: (context, noteData) {
@@ -49,29 +53,31 @@ class _HomePageState extends State<HomePage> {
               {
                 if (noteData.data == Null) {
                   return Center(
-                    child: Text("You don't have any notes yet"),
+                    child: Text("Você ainda não possui anotações"),
                   );
                 } else {
                   return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
-                          itemCount: noteData.data.length,
-                          itemBuilder: (context, index) {
-
-                            String title = noteData.data[index]['title'];
-                            String body = noteData.data[index]['body'];
-                            // String creation_date =
-                            //     noteData.data[index]['creation_date'];
-                            // int id = noteData.data[index]['id'];
-                            return Card(
-                              child: ListTile(
-                                  title: Text(title), 
-                                  subtitle: Text(body),
-                                ),
-                            );
-                          },
-                        ),
-                      );
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                      itemCount: noteData.data.length,
+                      itemBuilder: (context, index) {
+                        String title = noteData.data[index]['title'];
+                        String body = noteData.data[index]['body'];
+                        int id = noteData.data[index]['id'];
+                        return Card(
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.pushNamed(context, "/ShowNote",
+                                  arguments: NoteModel(
+                                      id: id, title: title, body: body));
+                            },
+                            title: Text(title),
+                            subtitle: Text(body),
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 }
                 break;
               }

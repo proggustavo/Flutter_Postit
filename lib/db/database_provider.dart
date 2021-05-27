@@ -25,8 +25,7 @@ class DatabaseProvider {
         CREATE TABLE notes (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
           title TEXT, 
-          body TEXT, 
-          creation_date DATE
+          body TEXT 
         )
         ''');
       }, version: 1);
@@ -50,4 +49,10 @@ class DatabaseProvider {
         return resultMap.isNotEmpty ? resultMap : Null;
       }
     }
+
+    Future<int> deleteNote(int id) async {
+    final db = await database;
+    int count = await db.rawDelete("DELETE FROM notes WHERE id = ?", [id]);
+    return count;
   }
+}
